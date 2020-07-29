@@ -96,7 +96,7 @@ jsPsych.plugins["audio-audio-response"] = (function() {
             recording_light: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Recording light',
-                default: '<div id="jspsych-html-audio-response-light" '+
+                default: '<div id="jspsych-audio-audio-response-light" '+
                     'style="border: 2px solid darkred; background-color: darkred; '+
                     'width: 50px; height: 50px; border-radius: 50px; margin: 20px auto; '+
                     'display: block;"></div>',
@@ -105,7 +105,7 @@ jsPsych.plugins["audio-audio-response"] = (function() {
             recording_light_off: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Recording light (off state)',
-                default: '<div id="jspsych-html-audio-response-light" '+
+                default: '<div id="jspsych-audio-audio-response-light" '+
                 'style="border: 2px solid darkred; background-color: inherit; '+
                 'width: 50px; height: 50px; border-radius: 50px; margin: 20px auto; '+
                 'display: block;"></div>',
@@ -198,12 +198,16 @@ jsPsych.plugins["audio-audio-response"] = (function() {
           audio.currentTime = 0;
         }
 
-        let html = '<div id="jspsych-html-audio-response-stimulus">'+trial.visual_stimulus+'</div>';
+        let html = '<div id="jspsych-audio-audio-response-stimulus">'+trial.visual_stimulus+'</div>';
 
         // add prompt if there is one
         if (trial.prompt !== null) {
             html += trial.prompt;
         }
+
+        trial.recording_light = '<div id="jspsych-audio-audio-response-light" '+ trial.recording_light + '</div>'
+        trial.recording_light_off = '<div id="jspsych-audio-audio-response-light" '+ trial.recording_light_off + '</div>'
+
 
         // add recording off light
         html += '<div id="jspsych-audio-audio-response-recording-container">'+trial.recording_light_off+'</div>';
