@@ -15,6 +15,8 @@
 jsPsych.plugins["audio-audio-response"] = (function() {
 
     var plugin = {};
+    
+    jsPsych.pluginAPI.registerPreload('audio-audio-response', 'audio_stimulus', 'audio');
 
     plugin.info = {
         name: 'audio-audio-response',
@@ -31,12 +33,6 @@ jsPsych.plugins["audio-audio-response"] = (function() {
                 pretty_name: 'Stimulus',
                 default: undefined,
                 description: 'Any visual stimulus to be displayed'
-            },
-            audio_stimulus: {
-                type: jsPsych.plugins.parameterType.AUDIO,
-                pretty_name: 'Stimulus',
-                default: undefined,
-                description: 'The audio file to be played'
             },
             buffer_length: {
                 type: jsPsych.plugins.parameterType.INT,
