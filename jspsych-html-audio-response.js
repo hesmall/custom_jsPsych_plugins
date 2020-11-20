@@ -2,11 +2,9 @@
  * jspsych-html-audio-response
  * Matt Jaquiery, Feb 2018 (https://github.com/mjaquiery)
  * Becky Gilbert, Apr 2020 (https://github.com/becky-gilbert)
-  * Hannah Small, 2020/07/07 (https://github.com/hesmall)
  * added in browser checking and mic checking using this code: https://experiments.ppls.ed.ac.uk/ -- Hannah Small, 2020/07/07
- * added option to manually end recording on each trial
  *
- * plugin for displaying an html stimulus and getting an audio response
+ * plugin for displaying a stimulus and getting an audio response
  *
  * documentation: docs.jspsych.org
  *
@@ -172,13 +170,15 @@ jsPsych.plugins["html-audio-response"] = (function() {
         let recorder = null;
         let start_time = null;
 
-        // add stimulus
-        let html = '<div id="jspsych-html-audio-response-stimulus">'+trial.stimulus+'</div>';
-
+        let html = '';
         // add prompt if there is one
         if (trial.prompt !== null) {
             html += trial.prompt;
         }
+        // add stimulus
+        html += '<div id="jspsych-html-audio-response-stimulus">'+trial.stimulus+'</div>';
+
+        
 
         // add recording off light
         html += '<div id="jspsych-html-audio-response-recording-container">'+trial.recording_light_off+'</div>';
@@ -187,7 +187,7 @@ jsPsych.plugins["html-audio-response"] = (function() {
         html += '<div id="jspsych-html-audio-response-audio-container"><audio id="jspsych-html-audio-response-audio" controls style="visibility:hidden;"></audio></div>';
 
         // add button element with hidden buttons
-        html += '<div id="jspsych-html-audio-response-buttons"><button id="jspsych-html-audio-response-rerecord" class="jspsych-audio-response-button jspsych-btn" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'; visibility:hidden;">Retry</button><button id="jspsych-html-audio-response-okay" class="jspsych-audio-response-button jspsych-btn" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'; visibility:hidden;">Sounds good!</button></div>';
+        html += '<div id="jspsych-html-audio-response-buttons"><button id="jspsych-html-audio-response-rerecord" class="jspsych-audio-response-button jspsych-btn" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'; visibility:hidden;">Retry</button><button id="jspsych-html-audio-response-okay" class="jspsych-audio-response-button jspsych-btn" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'; visibility:hidden;">NEXT</button></div>';
 
         function start_trial() {
             display_element.innerHTML = html;

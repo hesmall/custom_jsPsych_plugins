@@ -1,12 +1,10 @@
 /**
- * jspsych-audio-audio-response
+ * jspsych-html-audio-response
  * Matt Jaquiery, Feb 2018 (https://github.com/mjaquiery)
  * Becky Gilbert, Apr 2020 (https://github.com/becky-gilbert)
- * Hannah Small, 2020/07/07 (https://github.com/hesmall)
  * added in browser checking and mic checking using this code: https://experiments.ppls.ed.ac.uk/ -- Hannah Small, 2020/07/07
- * added option to manually end recording on each trial
  *
- * plugin for displaying an audio stimulus and getting an audio response (records audio only after the audio stimulus ends)
+ * plugin for displaying a stimulus and getting an audio response
  *
  * documentation: docs.jspsych.org
  *
@@ -15,8 +13,6 @@
 jsPsych.plugins["audio-audio-response"] = (function() {
 
     var plugin = {};
-    
-    jsPsych.pluginAPI.registerPreload('audio-audio-response', 'audio_stimulus', 'audio');
 
     plugin.info = {
         name: 'audio-audio-response',
@@ -33,6 +29,12 @@ jsPsych.plugins["audio-audio-response"] = (function() {
                 pretty_name: 'Stimulus',
                 default: undefined,
                 description: 'Any visual stimulus to be displayed'
+            },
+            audio_stimulus: {
+                type: jsPsych.plugins.parameterType.AUDIO,
+                pretty_name: 'Stimulus',
+                default: undefined,
+                description: 'The audio file to be played'
             },
             buffer_length: {
                 type: jsPsych.plugins.parameterType.INT,
@@ -194,19 +196,20 @@ jsPsych.plugins["audio-audio-response"] = (function() {
           audio.currentTime = 0;
         }
 
-        let html = '<div id="jspsych-audio-audio-response-stimulus">'+trial.visual_stimulus+'</div>';
+        let html = '';
+        
 
+        html += '<div id="jspsych-audio-audio-response-stimulus">'+trial.visual_stimulus+'</div>';
+        
         // add prompt if there is one
         if (trial.prompt !== null) {
             html += trial.prompt;
         }
 
-        trial.recording_light = '<div id="jspsych-audio-audio-response-light" '+ trial.recording_light + '</div>'
-        trial.recording_light_off = '<div id="jspsych-audio-audio-response-light" '+ trial.recording_light_off + '</div>'
-
-
         // add recording off light
         html += '<div id="jspsych-audio-audio-response-recording-container">'+trial.recording_light_off+'</div>';
+
+        
 
         // add audio element container with hidden audio element
         html += '<div id="jspsych-audio-audio-response-audio-container"><audio id="jspsych-audio-audio-response-audio" controls style="visibility:hidden;"></audio></div>';
@@ -218,8 +221,6 @@ jsPsych.plugins["audio-audio-response"] = (function() {
             display_element.innerHTML = html;
             document.querySelector('#jspsych-audio-audio-response-okay').addEventListener('click', end_trial);
             document.querySelector('#jspsych-audio-audio-response-rerecord').addEventListener('click', start_recording);
-            // Add visual indicators to let people know we're recording
-            document.querySelector('#jspsych-audio-audio-response-recording-container').innerHTML = trial.recording_light;
             // trial start time
             start_time = performance.now();
             // set timer to hide-html if stimulus duration is set
@@ -237,10 +238,23 @@ jsPsych.plugins["audio-audio-response"] = (function() {
             }
             
             //only allow recording after the audio has finished!
-            audio.onended = function() {
+            if(context !== null){
+              source.onended = function() {
                 start_time = performance.now(); //reset start time to measure rt from end of audio file
                 if (trial.wait_for_mic_approval===false) {
+                    // Add visual indicators to let people know we're recording
+                    document.querySelector('#jspsych-audio-audio-response-recording-container').innerHTML = trial.recording_light;
                     start_recording();
+                }
+              }
+            } else {
+                audio.onended = function() {
+                 start_time = performance.now(); //reset start time to measure rt from end of audio file
+                 if (trial.wait_for_mic_approval===false) {
+                    // Add visual indicators to let people know we're recording
+                    document.querySelector('#jspsych-audio-audio-response-recording-container').innerHTML = trial.recording_light;
+                    start_recording();
+                 }
                 }
             }
 
